@@ -8,8 +8,8 @@ import { ErrorToast, SuccessToast } from "../helpers/FormHelper";
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("sariothossain@gmail.com");
-  const [password, setPassword] = useState("asd123@@");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
 
@@ -17,7 +17,6 @@ const LoginForm = () => {
     e.preventDefault();
     try {
       const res = await instance.post("/sign-in", { email, password, rememberMe });
-console.log(res,"tollllllll")
       if(res?.error?.statusCode ==500){
         ErrorToast(res?.error?.message);
       }

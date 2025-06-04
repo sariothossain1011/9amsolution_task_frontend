@@ -8,12 +8,11 @@ import { instance } from "../helpers/axios/axiosInstance";
 import { getUserInfo, storeUserInfo } from "../../services/authService";
 import ShopTagInput from "../common/ShopTagInput";
 import { ErrorToast, SuccessToast } from "../helpers/FormHelper";
-// import { getUserInfo, storeUserInfo } from "../../services/authService";
 
 const RegistrationForm = () => {
     const [showPassword, setShowPassword] = useState(false);
-    const [email, setEmail] = useState("sariothossain1@gmail.com");
-    const [password, setPassword] = useState("asd123@@");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const [shops, setShops] = useState([]);
     const navigate = useNavigate();
 
