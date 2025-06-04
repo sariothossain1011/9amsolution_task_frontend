@@ -1,5 +1,6 @@
-import React, { Fragment } from 'react'
-import UserDashboard from '../../components/dashboard/UserDashBoard'
+import { Fragment } from "react"
+import UserDashboard from "../../components/dashboard/UserDashboard"
+
 
 const UserDashboardPage = () => {
   return (
