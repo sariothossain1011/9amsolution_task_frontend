@@ -96,7 +96,7 @@ const LoginForm = () => {
       <div className="flex justify-end items-center py-2">
         
         <Link to="/sign-up" className="text-sm font-normal text-blue-500">
-          create new account?
+          Don't have an account? Sign up
         </Link>
       </div>
     </form>

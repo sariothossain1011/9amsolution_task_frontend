@@ -90,7 +90,7 @@ const RegistrationForm = () => {
             <div className="flex justify-end items-center py-2">
 
                 <Link to="/sign-in" className="text-sm font-normal text-blue-500">
-                    already have a account
+                    Already have an account? Sign in
                 </Link>
             </div>
         </form>

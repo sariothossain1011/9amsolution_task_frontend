@@ -1,13 +1,11 @@
-
 import { useEffect, useState } from "react";
 import { FiUser } from "react-icons/fi";
 import { isLoggedIn, removeUserInfo } from "../../services/authService";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { instance } from "../helpers/axios/axiosInstance";
 import { ErrorToast } from "../helpers/FormHelper";
 
 const UserDashboard = () => {
-  const navigate = useNavigate();
   const auth = isLoggedIn();
 
   const [info, setInfo] = useState({});
@@ -19,41 +17,40 @@ const UserDashboard = () => {
   useEffect(() => {
     async function fetchBalance() {
       try {
-        setLoading(true)
+        setLoading(true);
         const res = await instance.get("/user-info");
-       setLoading(false)
-        if (res?.error?.statusCode == 500) {
-          ErrorToast(res?.error?.message)
-        }
-        
         setInfo(res?.data?.data);
       } catch (error) {
-        ErrorToast("Error: ", error.toString());
+        ErrorToast(error?.response?.data?.message || "Failed to fetch user info");
+      } finally {
+        setLoading(false);
       }
     }
     fetchBalance();
   }, []);
-  const shopNames = info?.shops?.map((shop) => shop);
 
+  useEffect(() => {
+    const hostParts = window.location.hostname.split(".");
+    const isLocal = hostParts.includes("localhost");
+    const subdomain = isLocal ? hostParts[0] : hostParts.length > 2 ? hostParts[0] : "";
+    setShopName(subdomain);
+  }, []);
 
   const handleLogout = () => {
-    removeUserInfo("token")
-    navigate("/sign-in");
+    removeUserInfo("token");
+    window.location.href = "/sign-in";
   };
 
   const handleShopClick = (shop) => {
     window.location.href = `http://${shop}.localhost:5173`;
   };
 
+  const shopNames = info?.shops?.length ? info.shops : [];
 
-  useEffect(() => {
-    const hostParts = window.location.hostname.split(".");
-    const subdomain = hostParts[0];
-    setShopName(subdomain);
-  }, []);
- if (loading) return <div className="text-center p-6">🔄 Verifying session...</div>;
+  if (!auth) return <Navigate to="/sign-in" />;
+  if (loading) return <div className="text-center p-6">🔄 Verifying session...</div>;
 
-  return auth ? (
+  return (
     <div className="min-h-screen bg-gray-100">
       <div className="flex justify-between items-center mb-4 bg-slate-300 py-4 px-6">
         <h1 className="text-2xl font-bold">9AM Solution</h1>
@@ -70,8 +67,14 @@ const UserDashboard = () => {
               <div className="p-4 border-b">
                 <h2 className="text-lg font-semibold mb-2">Your Shops</h2>
                 <ul className="text-md text-black font-semibold space-y-1">
-                  {shopNames.map((shop, index) => (
-                    <li key={index} className="pl-2 cursor-pointer" onClick={() => handleShopClick(shop)}>{index + 1 + " "}{shop}</li>
+                  {shopNames.map((shop) => (
+                    <li
+                      key={shop}
+                      className="pl-2 cursor-pointer hover:text-blue-500"
+                      onClick={() => handleShopClick(shop)}
+                    >
+                      {shop}
+                    </li>
                   ))}
                 </ul>
               </div>
@@ -91,18 +94,14 @@ const UserDashboard = () => {
         </div>
       </div>
 
-      {/* Placeholder for dashboard content */}
-      <div className="mt-10 text-center text-gray-600 ">
-        Welcome to your dashboard.
-        {shopName != "localhost" ? <p>This is {shopName} Shop</p> : " "}
-        <p>{info?.email}</p>
-
+      <div className="mt-10 text-center text-gray-600">
+        <h2 className="text-xl font-semibold mb-2">Welcome to your dashboard</h2>
+        {shopName && shopName !== "localhost" && <p>This is the <strong>{shopName}</strong> shop</p>}
+        {info?.email && <p className="mt-2 text-gray-500">{info.email}</p>}
       </div>
 
-
-      {/* Logout Confirmation Modal */}
       {showConfirmLogout && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center justify-items-center z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white rounded-xl p-6 w-80 h-40 shadow-lg text-center">
             <h3 className="text-lg font-bold mb-4">Are you sure you want to logout?</h3>
             <div className="flex justify-between mt-4">
@@ -123,7 +122,10 @@ const UserDashboard = () => {
         </div>
       )}
     </div>
-  ) : (<Navigate to="/sign-in" />);
+  );
 };
 
 export default UserDashboard;
+
+
+
