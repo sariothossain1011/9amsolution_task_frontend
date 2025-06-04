@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { FiUser } from "react-icons/fi";
 import { isLoggedIn, removeUserInfo } from "../../services/authService";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { instance } from "../helpers/axios/axiosInstance";
 import { ErrorToast } from "../helpers/FormHelper";
 
@@ -41,19 +41,15 @@ const UserDashboard = () => {
     window.location.href = "/sign-in";
   };
 
-  // const handleShopClick = (shop) => {
-  //   window.location.href = `http://${shop}.localhost:5173`;
-  // };
-  const handleShopClick = (shop) => {
-  const isLocal = window.location.hostname.includes("localhost");
-  const baseDomain = "9amsolution-task-frontend.vercel.app" || "localhost:5173";
+const handleShopClick = (shop) => {
+  const isLocal = window.location.hostname === "localhost";
+  const baseDomain = isLocal ? "localhost:5173" : "9amsolution-task-frontend.vercel.app";
+  
+  const protocol = isLocal ? "http" : "https";
 
-  const newURL = isLocal
-    ? `http://${shop}.localhost:5173`
-    : `https://${shop}.${baseDomain}`;
-
-  window.location.href = newURL;
+  window.location.href = `${protocol}://${shop}.${baseDomain}`;
 };
+
 
 
   const shopNames = info?.shops?.length ? info.shops : [];
@@ -81,10 +77,11 @@ const UserDashboard = () => {
                   {shopNames.map((shop) => (
                     <li
                       key={shop}
+
                       className="pl-2 cursor-pointer hover:text-blue-500"
                       onClick={() => handleShopClick(shop)}
                     >
-                      {shop}
+                      <Link href="" target="_blank" rel="noopener noreferrer"> {shop}</Link>
                     </li>
                   ))}
                 </ul>
