@@ -51,6 +51,7 @@ const UserDashboard = () => {
     const subdomain = hostParts[0];
     setShopName(subdomain);
   }, []);
+ if (loading) return <div className="text-center p-6">🔄 Verifying session...</div>;
 
   return auth ? (
     <div className="min-h-screen bg-gray-100">
