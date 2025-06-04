@@ -41,9 +41,20 @@ const UserDashboard = () => {
     window.location.href = "/sign-in";
   };
 
+  // const handleShopClick = (shop) => {
+  //   window.location.href = `http://${shop}.localhost:5173`;
+  // };
   const handleShopClick = (shop) => {
-    window.location.href = `http://${shop}.localhost:5173`;
-  };
+  const isLocal = window.location.hostname.includes("localhost");
+  const baseDomain = "9amsolution-task-frontend.vercel.app" || "localhost:5173";
+
+  const newURL = isLocal
+    ? `http://${shop}.localhost:5173`
+    : `https://${shop}.${baseDomain}`;
+
+  window.location.href = newURL;
+};
+
 
   const shopNames = info?.shops?.length ? info.shops : [];
 
